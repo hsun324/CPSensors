@@ -33,9 +33,9 @@ public class TimeSensorHandler implements ISensorHandler
 	{
 		Map<String, Object> dataMap = new HashMap<String, Object>();
 
-		long worldTime = caller.worldObj.getTotalWorldTime();
+		long worldTime = caller.worldObj.getWorldTime() + 6000; // add 6000 because tick 0 for the day is actually 6:00AM
 		
-		dataMap.put("mcTotalTick", worldTime);
+		dataMap.put("mcTotalTick", worldTime - 6000); // remove 6000 because it isn't in the tick count
 		dataMap.put("mcMinute", (int)((worldTime % 1000) / 1000d * 60));
 		dataMap.put("mcHour", (int)((worldTime % 24000) / 1000d));
 		dataMap.put("mcDay", (int)((worldTime % 8760000) / 8760000d * 365));
