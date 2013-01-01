@@ -18,7 +18,6 @@ package hsun324.cpsensors.tile;
 
 
 import hsun324.cpsensors.item.ItemTransmissionCard;
-import hsun324.cpsensors.sensors.ISensorHandler;
 import hsun324.cpsensors.sensors.TargetType;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IHostedPeripheral;
@@ -165,25 +164,20 @@ public class TileBlockSensor extends TileEntity implements IInventory, IHostedPe
 				ItemTransmissionCard card = (ItemTransmissionCard) stack.getItem();
 				TargetType targetType = card.getTargetType(stack);
 				if(targetType == TargetType.INVALID)
-					return new Object[] { null, "INVALID", "INVALID", null };
+					return new Object[] { card.getName(stack), "INVALID", "INVALID", null };
 				
 				if(!card.targetValid(this.worldObj, stack))
-					return new Object[] { null, "BAD", targetType.name(), null };
+					return new Object[] { card.getName(stack), "BAD", targetType.name(), null };
 				
 				if(targetType.getHandler() != null)
 				{
 					try
 					{
-						if(targetType.requiresTarget())
-						{
-							ISensorHandler handler = targetType.getHandler().getConstructor(targetType.getIdentifier()).newInstance(card.getTarget(this.worldObj, stack));
-							return new Object[] { card.getName(stack), "OK", targetType.name(), handler.getData(this) };
-						}
-						else
-						{
-							ISensorHandler handler = targetType.getHandler().getConstructor().newInstance();
-							return new Object[] { card.getName(stack), "OK", targetType.name(), handler.getData(this) };
-						}
+						return new Object[] { card.getName(stack),
+								"OK",
+								targetType.name(),
+								targetType.getHandler().getData(targetType.requiresTarget() ? card.getTarget(worldObj, stack) : null, this)
+						};
 					}
 					catch(Exception e)
 					{

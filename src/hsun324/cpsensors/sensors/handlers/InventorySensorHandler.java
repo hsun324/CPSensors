@@ -27,35 +27,37 @@ import hsun324.cpsensors.tile.TileBlockSensor;
 
 public class InventorySensorHandler implements ISensorHandler
 {
-	public final IInventory inventory;
-	public InventorySensorHandler(IInventory inventory)
-	{
-		this.inventory = inventory;
-	}
+	private final Map<String, Object> dataMap = new HashMap<String, Object>();
 	
 	@Override
-	public Map<String, Object> getData(TileBlockSensor caller)
+	public Map<String, Object> getData(Object inventoryObj, TileBlockSensor caller)
 	{
-		Map<String, Object> dataMap = new HashMap<String, Object>();
-		
-		dataMap.put("slotCapacity", inventory.getSizeInventory());
-		
-		int slotsOpen = 0;
-		for(int i = 0; i < inventory.getSizeInventory(); i++)
-			if(inventory.getStackInSlot(i) == null)
-				++slotsOpen;
-		dataMap.put("slotUnused", slotsOpen);
-
-		for(int i = 0; i < inventory.getSizeInventory(); i++)
+		if(inventoryObj instanceof IInventory)
 		{
-			ItemStack stack = inventory.getStackInSlot(i);
-			Map<String, Object> itemData = new HashMap<String, Object>();
-			itemData.put("itemId", stack == null?0:stack.itemID);
-			itemData.put("itemMeta", stack == null?0:stack.getItemDamage());
-			itemData.put("itemCount", stack == null?0:stack.stackSize);
+			IInventory inventory = (IInventory) inventoryObj;
 			
-			dataMap.put("slot" + (i + 1), itemData);
+			dataMap.clear();
+			
+			dataMap.put("slotCapacity", inventory.getSizeInventory());
+			
+			int slotsOpen = 0;
+			for(int i = 0; i < inventory.getSizeInventory(); i++)
+				if(inventory.getStackInSlot(i) == null)
+					++slotsOpen;
+			dataMap.put("slotUnused", slotsOpen);
+	
+			for(int i = 0; i < inventory.getSizeInventory(); i++)
+			{
+				ItemStack stack = inventory.getStackInSlot(i);
+				Map<String, Object> itemData = new HashMap<String, Object>();
+				itemData.put("itemId", stack == null?0:stack.itemID);
+				itemData.put("itemMeta", stack == null?0:stack.getItemDamage());
+				itemData.put("itemCount", stack == null?0:stack.stackSize);
+				
+				dataMap.put("slot" + (i + 1), itemData);
+			}
+			return dataMap;
 		}
-		return dataMap;
+		return null;
 	}
 }

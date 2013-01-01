@@ -26,20 +26,21 @@ import hsun324.cpsensors.tile.TileBlockSensor;
 
 public class ICEnergyStorageSensorHandler implements ISensorHandler
 {
-	public final IEnergyStorage energyStorage;
-	public ICEnergyStorageSensorHandler(IEnergyStorage energyStorage)
-	{
-		this.energyStorage = energyStorage;
-	}
+	private final Map<String, Object> dataMap = new HashMap<String, Object>();
 
 	@Override
-	public Map<String, Object> getData(TileBlockSensor caller)
+	public Map<String, Object> getData(Object energyStorageObj, TileBlockSensor caller)
 	{
-		Map<String, Object> dataMap = new HashMap<String, Object>();
-		dataMap.put("energyLevel", energyStorage.getStored());
-		dataMap.put("energyOutput", energyStorage.getOutput());
-		dataMap.put("energyCapacity", energyStorage.getCapacity());
-		return dataMap;
+		if(energyStorageObj instanceof IEnergyStorage)
+		{
+			IEnergyStorage energyStorage = (IEnergyStorage) energyStorageObj;
+			
+			dataMap.put("energyLevel", energyStorage.getStored());
+			dataMap.put("energyOutput", energyStorage.getOutput());
+			dataMap.put("energyCapacity", energyStorage.getCapacity());
+			return dataMap;
+		}
+		return null;
 	}
 
 }

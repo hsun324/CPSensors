@@ -22,5 +22,5 @@ import java.util.Map;
 
 public interface ISensorHandler
 {
-	public Map<String, Object> getData(TileBlockSensor caller);
+	public Map<String, Object> getData(Object target, TileBlockSensor caller);
 }

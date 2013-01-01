@@ -25,11 +25,9 @@ import hsun324.cpsensors.sensors.ISensorHandler;
 import hsun324.cpsensors.tile.TileBlockSensor;
 
 public class TimeSensorHandler implements ISensorHandler
-{
-	public TimeSensorHandler() { }
-	
+{	
 	@Override
-	public Map<String, Object> getData(TileBlockSensor caller)
+	public Map<String, Object> getData(Object nullTarget, TileBlockSensor caller)
 	{
 		Map<String, Object> dataMap = new HashMap<String, Object>();
 

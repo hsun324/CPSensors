@@ -52,7 +52,6 @@ public class PacketHandler implements IPacketHandler
 					byte[] typeNameBytes = new byte[typeNameLength];
 					in.read(typeNameBytes);
 					String typeName = new String(typeNameBytes, "UTF-16");
-					System.out.println(typeName);
 					
 					TargetType selectedType = TargetType.valueOf(typeName);
 					if(selectedType != null && selectedType != TargetType.INVALID)

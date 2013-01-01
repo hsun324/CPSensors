@@ -31,6 +31,7 @@ import net.minecraft.world.World;
 
 public class ItemTransmissionCard extends Item
 {
+	
 	public ItemTransmissionCard(int id)
 	{
 		super(id);
@@ -66,7 +67,7 @@ public class ItemTransmissionCard extends Item
 		if(targetType != TargetType.INVALID)
 		{
 			String name = getName(itemStack);
-			if(name == null)
+			if(name != null)
 				info.add(name + " (" + targetType.getDescription() + ")");
 			else
 				info.add(targetType.getDescription());
@@ -89,30 +90,29 @@ public class ItemTransmissionCard extends Item
 	}
 	
 	public TargetType getTargetType(ItemStack itemStack)
-	{
+	{		
 		NBTTagCompound tag = getTag(itemStack);
 		String typeString = tag.getString("type");
 		TargetType targetType = TargetType.valueOf(typeString);
+		
 		return targetType == null ? TargetType.INVALID : targetType;
 	}
-	
+
 	public int[] getLocation(ItemStack itemStack)
 	{
-		NBTTagCompound tag = getTag(itemStack);
-		int[] location = tag.getIntArray("location");
-		return (getTargetType(itemStack) == TargetType.INVALID || location == null || location.length != 3) ? new int[]{0, 0, 0} : location;
+		int[] location = getTag(itemStack).getIntArray("location");
+		return location == null || location.length != 3 ? new int[]{0, 0, 0} : location;
 	}
 	
 	public String getName(ItemStack itemStack)
 	{
-		NBTTagCompound tag = getTag(itemStack);
-		return tag.getString("name");
+		String name = getTag(itemStack).getString("name");
+		return name.trim().isEmpty() ? null : name;
 	}
 
 	public void setName(ItemStack itemStack, String name)
 	{
-		NBTTagCompound tag = getTag(itemStack);
-		tag.setString("name", name);
+		getTag(itemStack).setString("name", name);
 	}
 
 	public boolean targetValid(World world, ItemStack stack)

@@ -27,34 +27,34 @@ import hsun324.cpsensors.tile.TileBlockSensor;
 
 public class BeeHousingSensorHandler implements ISensorHandler
 {
-	public final IBeeHousing beeHousing;
-	public BeeHousingSensorHandler(IBeeHousing beeHousing)
-	{
-		this.beeHousing = beeHousing;
-	}
+	private final Map<String, Object> dataMap = new HashMap<String, Object>();
 	
 	@Override
-	public Map<String, Object> getData(TileBlockSensor caller)
+	public Map<String, Object> getData(Object beeHousingObj, TileBlockSensor caller)
 	{
-		Map<String, Object> dataMap = new HashMap<String, Object>();
-		
-		ItemStack queen = beeHousing.getQueen();
-		ItemStack drone = beeHousing.getDrone();
-		
-		dataMap.put("queenId", queen == null ? 0 : queen.itemID);
-		dataMap.put("queenMeta", queen == null ? 0 : queen.getItemDamage());
-		dataMap.put("droneId", drone == null ? 0 : drone.itemID);
-		dataMap.put("droneMeta", drone == null ? 0 : drone.getItemDamage());
-		dataMap.put("housingBiomeId", beeHousing.getBiomeId());
-		dataMap.put("housingTemperature", beeHousing.getTemperature().toString());
-		dataMap.put("housingHumidity", beeHousing.getHumidity().toString());
-		dataMap.put("housingCanBreed", beeHousing.canBreed());
-		dataMap.put("housingSealed", beeHousing.isSealed());
-		dataMap.put("housingSelfLighted", beeHousing.isSelfLighted());
-		dataMap.put("housingSunlightSimulated", beeHousing.isSunlightSimulated());
-		dataMap.put("housingHellish", beeHousing.isHellish());
-		dataMap.put("errorState", beeHousing.getErrorOrdinal());
-		
-		return dataMap;
+		if(beeHousingObj instanceof IBeeHousing)
+		{
+			IBeeHousing beeHousing = (IBeeHousing) beeHousingObj;
+			
+			ItemStack queen = beeHousing.getQueen();
+			ItemStack drone = beeHousing.getDrone();
+			
+			dataMap.put("queenId", queen == null ? 0 : queen.itemID);
+			dataMap.put("queenMeta", queen == null ? 0 : queen.getItemDamage());
+			dataMap.put("droneId", drone == null ? 0 : drone.itemID);
+			dataMap.put("droneMeta", drone == null ? 0 : drone.getItemDamage());
+			dataMap.put("housingBiomeId", beeHousing.getBiomeId());
+			dataMap.put("housingTemperature", beeHousing.getTemperature().toString());
+			dataMap.put("housingHumidity", beeHousing.getHumidity().toString());
+			dataMap.put("housingCanBreed", beeHousing.canBreed());
+			dataMap.put("housingSealed", beeHousing.isSealed());
+			dataMap.put("housingSelfLighted", beeHousing.isSelfLighted());
+			dataMap.put("housingSunlightSimulated", beeHousing.isSunlightSimulated());
+			dataMap.put("housingHellish", beeHousing.isHellish());
+			dataMap.put("errorState", beeHousing.getErrorOrdinal());
+			
+			return dataMap;
+		}
+		return null;
 	}
 }

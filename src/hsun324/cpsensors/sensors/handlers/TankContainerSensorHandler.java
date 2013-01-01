@@ -30,62 +30,64 @@ import hsun324.cpsensors.tile.TileBlockSensor;
 
 public class TankContainerSensorHandler implements ISensorHandler
 {
-	public final ITankContainer tankContainer;
-	public TankContainerSensorHandler(ITankContainer tankContainer)
-	{
-		this.tankContainer = tankContainer;
-	}
+	private final Map<String, Object> dataMap = new HashMap<String, Object>();
 
 	@Override
-	public Map<String, Object> getData(TileBlockSensor caller)
+	public Map<String, Object> getData(Object tankContainerObj, TileBlockSensor caller)
 	{
-		Map<String, Object> dataMap = new HashMap<String, Object>();
-
-		int currentTank = 0;
-		List<ILiquidTank> takenTanks = new ArrayList<ILiquidTank>();
-		for(ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
+		if(tankContainerObj instanceof ITankContainer)
 		{
-			ILiquidTank[] tanks = tankContainer.getTanks(direction);
-			for(ILiquidTank tank : tanks)
+			ITankContainer tankContainer = (ITankContainer) tankContainerObj;
+			
+			dataMap.clear();
+	
+			int currentTank = 0;
+			List<ILiquidTank> takenTanks = new ArrayList<ILiquidTank>();
+			for(ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
 			{
-				// Really hacky way to cull duplicate tanks...
-				boolean found = false;
-				for(ILiquidTank takenTank : takenTanks)
+				ILiquidTank[] tanks = tankContainer.getTanks(direction);
+				for(ILiquidTank tank : tanks)
 				{
-					if(takenTank.equals(tank) || (takenTank.getLiquid() == null && tank.getLiquid() == null) ||
-							(takenTank.getLiquid().itemID == tank.getLiquid().itemID &&
-							 takenTank.getLiquid().itemMeta == tank.getLiquid().itemMeta &&
-							 takenTank.getLiquid().amount == tank.getLiquid().amount &&
-							 takenTank.getCapacity() == tank.getCapacity()) || takenTank.equals(tank) || takenTank.hashCode() == tank.hashCode())
+					// TODO: Find a better way to equate tanks (especially BC3 tanks) w/o assumptions
+					boolean found = false;
+					for(ILiquidTank takenTank : takenTanks)
 					{
-						found = true;
-						break;
+						if(takenTank.equals(tank) || (takenTank.getLiquid() == null && tank.getLiquid() == null) ||
+								(takenTank.getLiquid().itemID == tank.getLiquid().itemID &&
+								 takenTank.getLiquid().itemMeta == tank.getLiquid().itemMeta &&
+								 takenTank.getLiquid().amount == tank.getLiquid().amount &&
+								 takenTank.getCapacity() == tank.getCapacity()) || takenTank.equals(tank) || takenTank.hashCode() == tank.hashCode())
+						{
+							found = true;
+							break;
+						}
 					}
-				}
-				
-				if(!found)
-				{
-					Map<String, Object> tankData = new HashMap<String, Object>();
-					if(tank.getLiquid() == null)
+					
+					if(!found)
 					{
-						tankData.put("liquidID", 0);
-						tankData.put("liquidMeta", 0);
-						tankData.put("liquidLevel", 0);
+						Map<String, Object> tankData = new HashMap<String, Object>();
+						if(tank.getLiquid() == null)
+						{
+							tankData.put("liquidID", 0);
+							tankData.put("liquidMeta", 0);
+							tankData.put("liquidLevel", 0);
+						}
+						else
+						{
+							tankData.put("liquidID", tank.getLiquid().itemID);
+							tankData.put("liquidMeta", tank.getLiquid().itemMeta);
+							tankData.put("liquidLevel", tank.getLiquid().amount);
+						}
+						tankData.put("liquidCapacity", tank.getCapacity());
+						tankData.put("liquidPressure", tank.getTankPressure());
+						dataMap.put("tank" + (++currentTank), tankData);
+						takenTanks.add(tank);
 					}
-					else
-					{
-						tankData.put("liquidID", tank.getLiquid().itemID);
-						tankData.put("liquidMeta", tank.getLiquid().itemMeta);
-						tankData.put("liquidLevel", tank.getLiquid().amount);
-					}
-					tankData.put("liquidCapacity", tank.getCapacity());
-					tankData.put("liquidPressure", tank.getTankPressure());
-					dataMap.put("tank" + (++currentTank), tankData);
-					takenTanks.add(tank);
 				}
 			}
+			dataMap.put("tanks", takenTanks.size());
+			return dataMap;
 		}
-		dataMap.put("tanks", takenTanks.size());
-		return dataMap;
+		return null;
 	}
 }

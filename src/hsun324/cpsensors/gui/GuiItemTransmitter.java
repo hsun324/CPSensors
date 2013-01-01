@@ -108,7 +108,6 @@ public class GuiItemTransmitter extends GuiScreen
 				ByteArrayOutputStream out = new ByteArrayOutputStream(17);
 				out.write(1);
 				
-				System.out.println(validTargetTypes.get(selected).name());
 				byte[] selectedTypeName = validTargetTypes.get(selected).name().getBytes("UTF-16");
 				
 				out.write(CoreLibrary.intToByte(selectedTypeName.length));

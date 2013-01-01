@@ -25,7 +25,6 @@ import forestry.api.apiculture.IBeeHousing;
 import hsun324.cpsensors.sensors.handlers.*;
 import ic2.api.IEnergyStorage;
 import net.minecraft.inventory.IInventory;
-import net.minecraftforge.liquids.ILiquidTank;
 import net.minecraftforge.liquids.ITankContainer;
 
 public class TargetType
@@ -36,41 +35,40 @@ public class TargetType
 	
 	public static void initTypes()
 	{
-		TIME = new TargetType("TIME", "Time", false, null, TimeSensorHandler.class);
+		TIME = new TargetType("TIME", "Time", false, null, new TimeSensorHandler());
 		INVALID = new TargetType("INVALID", "Invalid", null, null);
 		
 		try
 		{
-			new TargetType("ICENERGYSTORAGE", "IC2 Energy Storage", IEnergyStorage.class, ICEnergyStorageSensorHandler.class);
+			new TargetType("ICENERGYSTORAGE", "IC2 Energy Storage", IEnergyStorage.class, new ICEnergyStorageSensorHandler());
 		}
 		catch(NoClassDefFoundError e) { };
 		try
 		{
-			new TargetType("BEEHOUSING", "Forestry Bee Housing", IBeeHousing.class, BeeHousingSensorHandler.class);
+			new TargetType("BEEHOUSING", "Forestry Bee Housing", IBeeHousing.class, new BeeHousingSensorHandler());
 		}
 		catch(NoClassDefFoundError e) { };
 		try
 		{
-			new TargetType("BCPOWERPROVIDER", "BC3 Power Provider / Engine", IPowerProvider.class, BCPowerProviderSensorHandler.class);
+			new TargetType("BCPOWERPROVIDER", "BC3 Power Provider / Engine", IPowerProvider.class, new BCPowerProviderSensorHandler());
 		}
 		catch(NoClassDefFoundError e) { };
 
-		new TargetType("LIQUIDTANK", "Liquid Tank", ILiquidTank.class, LiquidTankSensorHandler.class);
-		new TargetType("LIQUIDCONTAINER", "Liquid Container", ITankContainer.class, TankContainerSensorHandler.class);
-		new TargetType("INVENTORY", "Inventory", IInventory.class, InventorySensorHandler.class);
+		new TargetType("LIQUIDCONTAINER", "Liquid Container", ITankContainer.class, new TankContainerSensorHandler());
+		new TargetType("INVENTORY", "Inventory", IInventory.class, new InventorySensorHandler());
 	}
 	
 	private final String name;
 	private final String description;
 	private final boolean reqTarget;
 	private final Class<?> identifier;
-	private final Class<? extends ISensorHandler> handler;
+	private final ISensorHandler handler;
 	
-	private TargetType(String name, String description, Class<?> identifier, Class<? extends ISensorHandler> handler)
+	private TargetType(String name, String description, Class<?> identifier, ISensorHandler handler)
 	{
 		this(name, description, true, identifier, handler);
 	}
-	private TargetType(String name, String description, boolean reqTarget, Class<?> identifier, Class<? extends ISensorHandler> handler)
+	private TargetType(String name, String description, boolean reqTarget, Class<?> identifier, ISensorHandler handler)
 	{
 		this.name = name;
 		this.description = description;
@@ -101,7 +99,7 @@ public class TargetType
 		return identifier;
 	}
 	
-	public Class<? extends ISensorHandler> getHandler()
+	public ISensorHandler getHandler()
 	{
 		return handler;
 	}

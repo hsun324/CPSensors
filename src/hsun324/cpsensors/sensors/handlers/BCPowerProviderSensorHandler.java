@@ -28,26 +28,29 @@ import hsun324.cpsensors.tile.TileBlockSensor;
 
 public class BCPowerProviderSensorHandler implements ISensorHandler
 {
-	public final IPowerProvider powerProvider;
-	public BCPowerProviderSensorHandler(IPowerProvider powerProvider)
-	{
-		this.powerProvider = powerProvider;
-	}
+	Map<String, Object> dataMap = new HashMap<String, Object>();
 	
 	@Override
-	public Map<String, Object> getData(TileBlockSensor caller)
+	public Map<String, Object> getData(Object powerProviderObj, TileBlockSensor caller)
 	{
-		Map<String, Object> dataMap = new HashMap<String, Object>();
-		
-		dataMap.put("providerLatency", powerProvider.getLatency());
-		dataMap.put("providerMinEnergyReceived", powerProvider.getMinEnergyReceived());
-		dataMap.put("providerMaxEnergyReceived", powerProvider.getMaxEnergyReceived());
-		dataMap.put("providerCapacity", powerProvider.getMaxEnergyStored());
-		dataMap.put("providerActivationEnergy", powerProvider.getActivationEnergy());
-		dataMap.put("providerEnergyLevel", (double) powerProvider.getEnergyStored());
-		for(ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
-			dataMap.put("providerSide" + direction.ordinal(), powerProvider.isPowerSource(direction));
-		
-		return dataMap;
+		if(powerProviderObj instanceof IPowerProvider)
+		{
+			IPowerProvider powerProvider = (IPowerProvider) powerProviderObj;
+			
+			dataMap.clear();
+			
+			dataMap.put("providerLatency", powerProvider.getLatency());
+			dataMap.put("providerMinEnergyReceived", powerProvider.getMinEnergyReceived());
+			dataMap.put("providerMaxEnergyReceived", powerProvider.getMaxEnergyReceived());
+			dataMap.put("providerCapacity", powerProvider.getMaxEnergyStored());
+			dataMap.put("providerActivationEnergy", powerProvider.getActivationEnergy());
+			dataMap.put("providerEnergyLevel", (double) powerProvider.getEnergyStored());
+			for(ForgeDirection direction : ForgeDirection.VALID_DIRECTIONS)
+				dataMap.put("providerSide" + direction.ordinal(), powerProvider.isPowerSource(direction));
+			
+			return dataMap;
+		}
+		return null;
 	}
+	
 }
