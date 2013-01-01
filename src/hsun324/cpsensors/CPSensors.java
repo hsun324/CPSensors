@@ -29,7 +29,7 @@ import cpw.mods.fml.common.network.NetworkMod;
 
 @Mod(modid = "CPSensors",
 	name = "CPSensors",
-	version = "0.4")
+	version = "0.4.0.015")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false)
 public class CPSensors 
 {
