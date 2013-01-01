@@ -1,0 +1,14 @@
+[{
+  "modid" : "CPSensors",
+  "name" : "CPSensors",
+  "version" : "0.4",
+  "url" : "https://github.com/hsun324/CPSensors",
+  "credits" : "Inspired by CCSensors",
+  "authors": ["hsun324"],
+  "description": "CC Peripheral than adds an interface to the blocks of popular mods",
+  "logoFile" : "",
+  "updateUrl" : "",
+  "parent" : "",
+  "parent" : "",
+  "screenshots": []
+}]
